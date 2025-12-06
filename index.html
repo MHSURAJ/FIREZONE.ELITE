@@ -1,321 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>FireZone Elite - Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FireZone Elite — Dashboard</title>
 
-  <!-- GOOGLE FONT -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+  <!-- style -->
   <link rel="stylesheet" href="style.css">
 
-
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Rajdhani', sans-serif;
-      background: url("https://i.ibb.co/1Zz2P9w/premium-bg.jpg") no-repeat center center fixed;
-      background-size: cover;
-      color: white;
-      overflow-x: hidden;
-    }
-
-    /* ===== LOGIN SCREEN ===== */
-    #loginScreen {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      backdrop-filter: blur(5px);
-    }
-
-    #loginScreen h1 {
-      font-size: 50px;
-      text-shadow: 0 0 20px #ff0040;
-      font-family: 'Orbitron';
-    }
-
-    .login-btn {
-      margin-top: 20px;
-      padding: 14px 30px;
-      border-radius: 10px;
-      font-size: 20px;
-      font-weight: 700;
-      cursor: pointer;
-      border: none;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: linear-gradient(45deg, #ff0040, #ff8800);
-      box-shadow: 0 0 20px #ff0040;
-    }
-
-    .login-btn img { width: 28px; }
-
-    /* ===== MENU BUTTON ===== */
-    .menu-btn {
-      position: fixed;
-      top: 25px;
-      left: 25px;
-      width: 55px;
-      height: 55px;
-      background: #ff0040;
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
-      cursor: pointer;
-      box-shadow: 0 0 20px #ff0040;
-      transition: 0.3s;
-      z-index: 2000;
-    }
-
-    .menu-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 30px #ff0040;
-    }
-
-    /* ===== SIDEBAR ===== */
-    .sidebar {
-      width: 270px;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(12px);
-      position: fixed;
-      top: 0;
-      left: -300px;
-      transition: 0.4s ease;
-      padding-top: 90px;
-      border-right: 2px solid #ff0040;
-      box-shadow: 0 0 30px #ff0040;
-      z-index: 1999;
-    }
-
-    .sidebar.open {
-      left: 0;
-      animation: fadeIn 0.4s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateX(-50px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    .sidebar a {
-      display: block;
-      padding: 18px 25px;
-      font-size: 20px;
-      color: white;
-      text-decoration: none;
-      border-bottom: 1px solid rgba(255, 0, 64, 0.3);
-      transition: 0.3s;
-    }
-
-    .sidebar a:hover {
-      background: #ff0040;
-      box-shadow: 0 0 20px #ff0040;
-    }
-
-    /* ===== CONTENT ===== */
-    .content {
-      padding: 30px;
-      display: none;
-    }
-
-    .activePage {
-      display: block;
-    }
-
-    .title {
-      text-align: center;
-      font-size: 36px;
-      font-family: 'Orbitron';
-      text-shadow: 0 0 20px #ff0040;
-    }
-
-    /* ===== CARD UI ===== */
-    .card {
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(6px);
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 0, 64, 0.5);
-      margin: 20px auto;
-      width: 90%;
-      max-width: 600px;
-      box-shadow: 0 0 25px #ff0040;
-      transition: 0.3s;
-    }
-
-    .card:hover {
-      transform: scale(1.02);
-      box-shadow: 0 0 35px #ff0040;
-    }
-  </style>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Orbitron:wght@600&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Floating neon menu (Valorant-like) -->
+  <button id="menuBtn" class="menu-btn" aria-label="menu">☰</button>
 
-<!-- ======================================
-                LOGIN SCREEN
-======================================= -->
-<div id="loginScreen">
-  <h1>FireZone Elite</h1>
-  <button class="login-btn" onclick="loginWithGoogle()">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-    Login with Google
-  </button>
-</div>
+  <!-- Sidebar -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">FZ</div>
+      <div class="close" id="closeSidebar">✕</div>
+    </div>
+    <nav class="nav">
+      <a class="nav-link" data-page="dashboard">Dashboard</a>
+      <a class="nav-link" data-page="allmatches">All Matches</a>
+      <a class="nav-link" data-page="played">Played Matches</a>
+      <a class="nav-link" data-page="contact">Contact Us</a>
+      <a class="nav-link" id="signOutBtn">Logout</a>
+    </nav>
+    <div class="sidebar-footer">v1.0</div>
+  </aside>
 
-<!-- MENU BUTTON -->
-<div class="menu-btn" onclick="toggleSidebar()">☰</div>
+  <!-- Main content -->
+  <main id="main">
+    <!-- LOGIN CARD (shown when not logged in) -->
+    <section id="loginSection" class="center-screen">
+      <div class="glass-card login-card">
+        <h1 class="brand">FireZone Elite</h1>
+        <p class="muted">Pro tournaments • Competitive • Fast</p>
+        <button id="googleLogin" class="btn btn-primary">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G" /> Login with Google
+        </button>
+      </div>
+    </section>
 
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-  <a onclick="showPage('dashboard')">Dashboard</a>
-  <a onclick="showPage('tournaments')">All Matches</a>
-  <a onclick="showPage('played')">Played Matches</a>
-  <a onclick="showPage('contact')">Contact Us</a>
-</div>
+    <!-- DASHBOARD (default visible after login) -->
+    <section id="dashboard" class="page">
+      <div class="page-inner">
+        <h2 class="page-title">Dashboard</h2>
+        <div id="playerCard" class="grid">
+          <div class="glass-card small" id="playerInfo">Loading player...</div>
+          <div class="glass-card small" id="playerStats">Loading stats...</div>
+          <div class="glass-card small" id="quickActions">
+            <button class="btn btn-ghost" onclick="showPage('allmatches')">Browse Matches</button>
+            <button class="btn btn-ghost" onclick="showPage('played')">Your Played</button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<!-- ======================================
-                DASHBOARD
-======================================= -->
-<div id="dashboard" class="content activePage">
-  <h2 class="title">Player Dashboard</h2>
-  <div id="playerInfo" class="card">Loading player info...</div>
-  <div id="playerStats" class="card">Loading stats...</div>
-</div>
+    <!-- ALL MATCHES -->
+    <section id="allmatches" class="page">
+      <div class="page-inner">
+        <h2 class="page-title">All Matches</h2>
+        <div id="tournamentList" class="list"></div>
+      </div>
+    </section>
 
-<!-- ======================================
-                ALL MATCHES
-======================================= -->
-<div id="tournaments" class="content">
-  <h2 class="title">All Matches</h2>
-  <div id="tournamentList"></div>
-</div>
+    <!-- PLAYED -->
+    <section id="played" class="page">
+      <div class="page-inner">
+        <h2 class="page-title">Played Matches</h2>
+        <div id="playedList" class="list"></div>
+      </div>
+    </section>
 
-<!-- ======================================
-              PLAYED MATCHES
-======================================= -->
-<div id="played" class="content">
-  <h2 class="title">Played Matches</h2>
-  <div id="playedList">Loading...</div>
-</div>
+    <!-- CONTACT -->
+    <section id="contact" class="page">
+      <div class="page-inner">
+        <h2 class="page-title">Contact Us</h2>
+        <div class="glass-card">
+          <p>Gmail: <a href="mailto:surushannu@gmail.com">surushannu@gmail.com</a></p>
+          <p class="muted">Support available 10:00 - 22:00 IST</p>
+        </div>
+      </div>
+    </section>
+  </main>
 
-<!-- ======================================
-                CONTACT US
-======================================= -->
-<div id="contact" class="content">
-  <h2 class="title">Contact Us</h2>
-  <div class="card" style="text-align:center;">
-    Gmail: <b>surushannu@gmail.com</b>
-  </div>
-</div>
+  <!-- Firebase libs (v8 used for simplicity) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-<!-- ========================================================
-                      FIREBASE
-======================================================== -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script>
+    /***********************
+      IMPORTANT:
+      Replace the firebaseConfig object below with your project's config.
+      You can find it in Firebase Console -> Project Settings -> SDK snippet.
+    ***********************/
+    const firebaseConfig = {
+      apiKey: "AIzaSyD66aIVOTVco6rTtpVinkl64UZGnZDgn1o",
+      authDomain: "firezone-elite.firebaseapp.com",
+      databaseURL: "https://firezone-elite-default-rtdb.firebaseio.com/",
+      projectId: "firezone-elite",
+      storageBucket: "firezone-elite.appspot.com",
+      messagingSenderId: "121224317328",
+      appId: "1:121224317328:web:a4d19bab51fc8076400b15"
+    };
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyD66aIVOTVco6rTtpVinkl64UZGnZDgn1o",
-    authDomain: "firezone-elite.firebaseapp.com",
-    databaseURL: "https://firezone-elite-default-rtdb.firebaseio.com/",
-    projectId: "firezone-elite",
-    storageBucket: "firezone-elite.appspot.com",
-    messagingSenderId: "121224317328",
-    appId: "1:121224317328:web:a4d19bab51fc8076400b15"
-  };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
 
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.database();
+    // UI helpers
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const closeSidebarBtn = document.getElementById('closeSidebar');
+    const pages = document.querySelectorAll('.page');
+    const loginSection = document.getElementById('loginSection');
 
-  /* LOGIN */
-  function loginWithGoogle() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider);
-  }
+    function toggleSidebar() {
+      sidebar.classList.toggle('open');
+      // blur background effect
+      document.body.classList.toggle('sidebar-open');
+    }
+    menuBtn.addEventListener('click', toggleSidebar);
+    closeSidebarBtn.addEventListener('click', toggleSidebar);
 
-  /* SIDEBAR */
-  function toggleSidebar() {
-    document.getElementById("sidebar").classList.toggle("open");
-  }
+    // page switcher
+    function showPage(id) {
+      pages.forEach(p => p.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+      // close sidebar on selection (mobile-friendly)
+      if (sidebar.classList.contains('open')) toggleSidebar();
+    }
 
-  /* PAGE SWITCH */
-  function showPage(page) {
-    document.querySelectorAll(".content").forEach(x => x.classList.remove("activePage"));
-    document.getElementById(page).classList.add("activePage");
-    toggleSidebar();
-  }
+    // initialize page visibility
+    showPage('dashboard');
 
-  /* AUTH CHECK */
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      document.getElementById("loginScreen").style.display = "none";
-
-      document.getElementById("playerInfo").innerHTML = `
-        <p><b>Email:</b> ${user.email}</p>
-        <p><b>UID:</b> ${user.uid}</p>
-      `;
-
-      db.ref("users/" + user.uid + "/played").on("value", snap => {
-        let total = snap.exists() ? snap.numChildren() : 0;
-        document.getElementById("playerStats").innerHTML = `
-          <p><b>Total Played Matches:</b> ${total}</p>
-        `;
+    // Auth — Login with popup
+    document.getElementById('googleLogin').addEventListener('click', () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).catch(err => {
+        alert('Login failed: ' + err.message);
+        console.error(err);
       });
-
-    } else {
-      document.getElementById("loginScreen").style.display = "flex";
-    }
-  });
-
-  /* LOAD TOURNAMENTS */
-  db.ref("tournaments").on("value", snap => {
-    let box = document.getElementById("tournamentList");
-    box.innerHTML = "";
-    if (!snap.exists()) {
-      box.innerHTML = "<div class='card'>No matches available</div>";
-      return;
-    }
-    snap.forEach(t => {
-      let d = t.val();
-      box.innerHTML += `
-        <div class="card">
-          <h3>${d.name}</h3>
-          <p><b>Entry:</b> ₹${d.entryFee}</p>
-          <p><b>Date:</b> ${d.date}</p>
-          <p><b>Time:</b> ${d.time}</p>
-        </div>`;
     });
-  });
 
-  /* LOAD PLAYED MATCHES */
-  auth.onAuthStateChanged(user => {
-    if (!user) return;
-    db.ref("users/" + user.uid + "/played").on("value", snap => {
-      let b = document.getElementById("playedList");
-      b.innerHTML = "";
+    // Sign out
+    document.getElementById('signOutBtn').addEventListener('click', () => {
+      auth.signOut();
+    });
+
+    // Sign out helper (also for menu)
+    function signOutNow() { auth.signOut(); }
+
+    // DOM nodes to update
+    const playerInfo = document.getElementById('playerInfo');
+    const playerStats = document.getElementById('playerStats');
+    const tournamentList = document.getElementById('tournamentList');
+    const playedList = document.getElementById('playedList');
+
+    // auth state
+    let currentUser = null;
+    auth.onAuthStateChanged(user => {
+      currentUser = user;
+      if (user) {
+        // hide login, show dashboard area
+        loginSection.style.display = 'none';
+        document.querySelectorAll('main .page').forEach(p => p.style.display = 'none');
+        showPage('dashboard');
+
+        // set player info
+        playerInfo.innerHTML = `
+          <h3>${user.displayName || 'Player'}</h3>
+          <p class="muted">${user.email}</p>
+        `;
+
+        // load stats (example: count played)
+        db.ref('users/' + user.uid + '/played').once('value').then(snap => {
+          const count = snap.exists() ? snap.numChildren() : 0;
+          playerStats.innerHTML = `<h3>Total Played</h3><p class="big">${count}</p>`;
+        });
+
+        // load played matches realtime
+        db.ref('users/' + user.uid + '/played').on('value', snap => {
+          playedList.innerHTML = '';
+          if (!snap.exists()) {
+            playedList.innerHTML = `<div class="card-empty">No played matches yet.</div>`;
+            return;
+          }
+          snap.forEach(ch => {
+            const data = ch.val();
+            const el = document.createElement('div');
+            el.className = 'glass-card small';
+            el.innerHTML = `<strong>${data.match || 'Match'}</strong><div class="muted">${data.date || ''}</div>`;
+            playedList.appendChild(el);
+          });
+        });
+      } else {
+        // not logged in
+        loginSection.style.display = 'flex';
+        // hide other pages
+        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+        // close sidebar if open
+        if (sidebar.classList.contains('open')) toggleSidebar();
+      }
+    });
+
+    // load tournaments (realtime)
+    db.ref('tournaments').on('value', snap => {
+      tournamentList.innerHTML = '';
       if (!snap.exists()) {
-        b.innerHTML = "<div class='card'>No played matches</div>";
+        tournamentList.innerHTML = `<div class="card-empty">No matches available</div>`;
         return;
       }
-      snap.forEach(m => {
-        b.innerHTML += `<div class='card'><b>${m.val().match}</b></div>`;
+      snap.forEach(ch => {
+        const d = ch.val();
+        const card = document.createElement('div');
+        card.className = 'glass-card';
+        card.innerHTML = `
+          <div class="t-title">${d.name || 'Match'}</div>
+          <div class="t-meta">Entry ₹${d.entryFee || '0'} • ${d.date || ''} ${d.time || ''}</div>
+        `;
+        tournamentList.appendChild(card);
       });
     });
-  });
-</script>
-
+  </script>
 </body>
 </html>
-
