@@ -1,33 +1,23 @@
 body {
-  margin: 0;
-  padding: 0;
-  background: url("assets/bg.jpg") no-repeat center center fixed;
-  background-size: cover;
-  font-family: Arial, sans-serif;
+    margin: 0;
+    font-family: Arial, sans-serif;
 }
 
 .login-box {
-  width: 320px;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(5px);
-  border-radius: 12px;
-  text-align: center;
-  color: white;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+    width: 350px;
+    background: rgba(0,0,0,0.7);
+    padding: 25px;
+    color: #fff;
+    border-radius: 10px;
+    text-align: center;
+    margin: 120px auto;
 }
 
-button {
-  padding: 12px;
-  width: 100%;
-  background: orange;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 10px;
-  font-size: 16px;
-  font-weight: bold;
+.google-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 17px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
