@@ -1,78 +1,45 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Orbitron', sans-serif;
-    background: url("assets/bg.jpg") no-repeat center center fixed;
-    background-size: cover;
-    overflow: hidden;
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial;
 }
 
-/* Sidebar Button */
-.menu-btn {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    background: #ff0055;
-    color: white;
-    padding: 12px 15px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 25px;
-    box-shadow: 0 0 20px #ff0055;
-    z-index: 1000;
+.bg {
+  background: url("bg.png") no-repeat center center fixed;
+  background-size: cover;
 }
 
-/* Sidebar */
-.side-menu {
-    position: fixed;
-    top: 0;
-    left: -260px;
-    width: 260px;
-    height: 100vh;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(10px);
-    padding-top: 80px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    transition: 0.4s;
+.login-box {
+  width: 350px;
+  margin: 150px auto;
+  padding: 30px;
+  background: rgba(0,0,0,0.6);
+  text-align: center;
+  border-radius: 10px;
 }
 
-.side-menu a {
-    color: white;
-    font-size: 22px;
-    padding: 12px 25px;
-    text-decoration: none;
-    transition: 0.3s;
+.google-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  background: #ff5722;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.side-menu a:hover {
-    background: #ff0055;
-    border-radius: 10px;
-}
+.google-btn:hover { background: #e64a19; }
 
-.side-menu.open {
-    left: 0;
-}
+.white { color: white; text-align: center; margin-top: 30px; }
 
-/* Center Content */
-.content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: white;
-    width: 100%;
-}
-
-.title {
-    font-size: 50px;
-    text-shadow: 0 0 20px #ff00aa;
-    margin-bottom: 40px;
-}
-
-/* Google Button Wrapper Fix */
-.g_id_signin {
-    display: inline-block;
+.logout {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background: red;
+  border: none;
+  color: white;
+  cursor: pointer;
 }
