@@ -1,11 +1,3 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
-    getAuth, GoogleAuthProvider, signInWithPopup 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import {
-    getDatabase, ref, get, set
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyD66aIVOTVco6rTtpVinkl64UZGnZDgn1o",
   authDomain: "firezone-elite.firebaseapp.com",
@@ -17,26 +9,30 @@ const firebaseConfig = {
   measurementId: "G-9YR0LYN37X"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
-const provider = new GoogleAuthProvider();
+firebase.initializeApp(firebaseConfig);
 
-document.getElementById("googleBtn").addEventListener("click", () => {
-    signInWithPopup(auth, provider)
-        .then(async (result) => {
-            const user = result.user;
+const auth = firebase.auth();
 
-            const adminEmail = "surushannu@gmail.com";
+function googleLogin() {
+  let provider = new firebase.auth.GoogleAuthProvider();
 
-            if (user.email === adminEmail) {
-                window.location.href = "admin.html";
-            } else {
-                window.location.href = "public.html";
-            }
-        })
+  auth.signInWithPopup(provider).then(res => {
+    let email = res.user.email;
 
-        .catch((error) => {
-            alert("Login Failed: " + error.message);
-        });
+    if (email === "surushannu@gmail.com") {
+      window.location.href = "admin.html";
+    } else {
+      window.location.href = "player.html";
+    }
+  });
+}
+
+auth.onAuthStateChanged(user => {
+  if (user) {
+    if (user.email === "surushannu@gmail.com") {
+      window.location.href = "admin.html";
+    } else {
+      window.location.href = "player.html";
+    }
+  }
 });
