@@ -75,7 +75,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
                              <p><strong>Password:</strong> ${m.roomPassword || "-"}</p>`;
             }
 
-            cardHTML += `<button onclick="window.open('https://forms.gle/ucxE3a8moxr3QrXp6', '_blank')">Register</button>`;
+            // Register button always works
+            cardHTML += `<button onclick="window.open('https://forms.gle/ucxE3a8moxr3QrXp6','_blank')">Register</button>`;
 
             card.innerHTML = cardHTML;
             container.appendChild(card);
