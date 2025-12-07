@@ -1,123 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Admin Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <style>
-    body { background:#111; color:white; font-family:Arial; }
-
-    .match-box {
-      background:#1f1f1f;
-      padding:15px;
-      border-radius:10px;
-      margin:20px;
-      border-left:4px solid #00e676;
-    }
-
-    button {
-      padding:8px 12px;
-      border:none;
-      border-radius:6px;
-      cursor:pointer;
-      margin-right:5px;
-      margin-top:8px;
-      color:white;
-    }
-    .approve { background:green; }
-    .reject { background:red; }
-    .room { background:#2196f3; }
-  </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+<style>
+    body { margin:0; font-family: Arial,sans-serif; background:#121212; color:#fff; }
+    h1 { padding:20px 20px 0 20px; margin:0; }
+    table { width:95%; margin:20px auto; border-collapse: collapse; }
+    th, td { padding:12px; border:1px solid #444; text-align:left; }
+    th { background:#1f1f1f; }
+    tr:nth-child(even) { background:#1a1a1a; }
+    button { padding:6px 12px; margin-right:5px; border:none; cursor:pointer; border-radius:4px; font-weight:bold; }
+    .approve { background-color:#28a745; color:#fff; }
+    .reject { background-color:#dc3545; color:#fff; }
+    .status-approved { color:#28a745; font-weight:bold; }
+    .status-rejected { color:#dc3545; font-weight:bold; }
+</style>
 </head>
 <body>
 
-<h2 style="margin-left:20px;">Admin Dashboard</h2>
+<h1>Admin Dashboard</h1>
+<p style="padding-left:20px;">Player Requests</p>
 
-<div id="box"></div>
-
-
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<table id="playerTable">
+<thead>
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>Phone</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<!-- Player rows injected here -->
+</tbody>
+</table>
 
 <script>
-firebase.initializeApp({
-  apiKey: "AIzaSyD66aIVOTVco6rTtpVinkl64UZGnZDgn1o",
-  authDomain: "firezone-elite.firebaseapp.com",
-  databaseURL: "https://firezone-elite-default-rtdb.firebaseio.com",
-  projectId: "firezone-elite"
-});
+// ===== CONFIG =====
+// Publish Google Form responses as CSV/TSV, paste URL here
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/YOUR_SHEET_ID/pub?output=tsv"; // replace with your sheet
+// ==================
 
-const auth = firebase.auth();
-const db = firebase.database();
-const box = document.getElementById("box");
+let approvals = JSON.parse(localStorage.getItem("approvals")) || {};
 
-auth.onAuthStateChanged(user => {
-  if (!user || user.email !== "surushannu@gmail.com") {
-    window.location.href = "index.html";
-  } else {
-    loadRequests();
-  }
-});
+function renderTable(data) {
+    const tbody = document.querySelector("#playerTable tbody");
+    tbody.innerHTML = "";
+    data.forEach(row => {
+        const [name, email, phone] = row;
+        const tr = document.createElement("tr");
+        let statusText = approvals[email] || "Pending";
+        let statusClass = statusText === "approved" ? "status-approved" :
+                          statusText === "rejected" ? "status-rejected" : "";
 
-function loadRequests() {
-  box.innerHTML = "<h3 style='margin-left:20px;'>Player Requests</h3>";
-
-  db.ref("matchRequests").on("value", snap => {
-    box.innerHTML = "";
-
-    snap.forEach(match => {
-      let matchId = match.key;
-
-      match.forEach(user => {
-        let data = user.val();
-
-        box.innerHTML += `
-          <div class='match-box'>
-            <h3>Match: ${matchId}</h3>
-            <p><b>Email:</b> ${data.email}</p>
-            <p><b>Status:</b> ${data.status}</p>
-
-            <button class="approve" onclick="approve('${matchId}','${user.key}')">Approve</button>
-            <button class="reject" onclick="reject('${matchId}','${user.key}')">Reject</button>
-
-            <button class="room" onclick="addRoom('${matchId}','${user.key}')">Add Room ID</button>
-          </div>
+        tr.innerHTML = `
+            <td>${name}</td>
+            <td>${email}</td>
+            <td>${phone}</td>
+            <td class="${statusClass}">${statusText}</td>
+            <td>
+                <button class="approve" ${statusText==="approved"?"disabled":""}>Approve</button>
+                <button class="reject" ${statusText==="rejected"?"disabled":""}>Reject</button>
+            </td>
         `;
-      });
+        // Button Events
+        tr.querySelector(".approve").addEventListener("click", ()=>{
+            approvals[email] = "approved";
+            localStorage.setItem("approvals", JSON.stringify(approvals));
+            renderTable(data);
+        });
+        tr.querySelector(".reject").addEventListener("click", ()=>{
+            approvals[email] = "rejected";
+            localStorage.setItem("approvals", JSON.stringify(approvals));
+            renderTable(data);
+        });
+        tbody.appendChild(tr);
     });
-  });
 }
 
-function approve(matchId, uid) {
-  db.ref("matchRequests/"+matchId+"/"+uid).update({
-    status: "approved"
-  });
-
-  alert("Approved!");
-}
-
-function reject(matchId, uid) {
-  db.ref("matchRequests/"+matchId+"/"+uid).update({
-    status: "rejected"
-  });
-
-  alert("Rejected.");
-}
-
-function addRoom(matchId, uid) {
-  let room = prompt("Room ID:");
-  let pass = prompt("Password:");
-
-  if (room && pass) {
-    db.ref("matchRequests/"+matchId+"/"+uid).update({
-      roomId: room,
-      password: pass
-    });
-    alert("Room details added!");
-  }
-}
+// Fetch Google Sheet Data
+fetch(sheetURL)
+.then(res => res.text())
+.then(tsv => {
+    const rows = tsv.split("\n").slice(1).filter(r => r.trim()!=="").map(r => r.split("\t"));
+    renderTable(rows);
+})
+.catch(err => {
+    console.error("Error fetching sheet:", err);
+    const tbody = document.querySelector("#playerTable tbody");
+    tbody.innerHTML = "<tr><td colspan='5'>Failed to load player requests.</td></tr>";
+});
 </script>
 
 </body>
