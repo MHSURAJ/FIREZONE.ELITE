@@ -1,83 +1,50 @@
-if(localStorage.getItem("userType") !== "player"){
-    alert("Unauthorized! Please login as player.");
-    window.location.href = "login.html";
-}
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
-    getAuth, onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import {
-    getDatabase, ref, get, update
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+document.addEventListener("DOMContentLoaded", ()=>{
 
-const firebaseConfig = {
-  apiKey: "AIzaSyD66aIVOTVco6rTtpVinkl64UZGnZDgn1o",
-  authDomain: "firezone-elite.firebaseapp.com",
-  databaseURL: "https://firezone-elite-default-rtdb.firebaseio.com",
-  projectId: "firezone-elite",
-  storageBucket: "firezone-elite.firebasestorage.app",
-  messagingSenderId: "121224317328",
-  appId: "1:121224317328:web:a4d19bab51fc8076400b15",
-  measurementId: "G-9YR0LYN37X"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
-
-let currentUser = null;
-
-onAuthStateChanged(auth, (user) => {
-    if (!user) {
+    // ===== Login Check =====
+    if(localStorage.getItem("userType") !== "player"){
+        alert("Unauthorized! Please login as player.");
         window.location.href = "login.html";
+    }
+
+    // ===== Logout =====
+    document.getElementById("logoutBtn").addEventListener("click", ()=>{
+        localStorage.removeItem("userType");
+        localStorage.removeItem("userEmail");
+        alert("Logged out");
+        window.location.href = "login.html";
+    });
+
+    // ===== Upcoming Matches =====
+    const matchesList = document.getElementById("matchesList");
+    const matches = JSON.parse(localStorage.getItem("matches")) || [];
+    if(matches.length === 0){
+        matchesList.innerHTML = "<li>No upcoming matches</li>";
     } else {
-        currentUser = user;
-        loadAllMatches();
+        matches.forEach(m=>{
+            const li = document.createElement("li");
+            li.textContent = `${m.name} - ${m.date} ${m.time} | Players: ${m.players}`;
+            matchesList.appendChild(li);
+        });
     }
+
+    // ===== Contact Us =====
+    document.getElementById("sendMsgBtn").addEventListener("click", ()=>{
+        const name = document.getElementById("contactName").value.trim();
+        const email = document.getElementById("contactEmail").value.trim();
+        const msg = document.getElementById("contactMsg").value.trim();
+
+        if(!name || !email || !msg){
+            alert("Please fill all fields");
+            return;
+        }
+
+        // For demo: just show alert (replace with email API like EmailJS or Firebase)
+        alert(`Message sent!\nName: ${name}\nEmail: ${email}\nMessage: ${msg}`);
+
+        // Clear form
+        document.getElementById("contactName").value = "";
+        document.getElementById("contactEmail").value = "";
+        document.getElementById("contactMsg").value = "";
+    });
+
 });
-
-function showSection(sec) {
-    if (sec === "all") loadAllMatches();
-    if (sec === "joined") loadJoinedMatches();
-    if (sec === "contact") {
-        document.getElementById("mainContent").innerHTML = `
-            <h2>Contact Us</h2>
-            <p>Email: <b>surushannu@gmail.com</b></p>
-        `;
-    }
-}
-
-async function loadAllMatches() {
-    const snap = await get(ref(db, "tournaments"));
-
-    let html = `<h2>All Matches</h2>`;
-
-    snap.forEach(match => {
-        let m = match.val();
-        let id = match.key;
-
-        html += `
-        <div class="match-card">
-            <h3>Match ID: ${id}</h3>
-            <p>Date: ${m.date}</p>
-            <p>Time: ${m.time}</p>
-            <p>Entry: ${m.entryFee}</p>
-            <p>Prize: ${m.prize}</p>
-            <p>Winners: ${m.winners}</p>
-            <button onclick="registerMatch('${id}')">Register</button>
-        </div>
-        `;
-    });
-
-    document.getElementById("mainContent").innerHTML = html;
-}
-
-async function registerMatch(matchID) {
-    await update(ref(db, `tournaments/${matchID}/players/${currentUser.uid}`), {
-        registered: true,
-        approved: false
-    });
-
-    alert("Registration sent! Wait for admin approval.");
-}
-window.registerMatch = registerMatch;
