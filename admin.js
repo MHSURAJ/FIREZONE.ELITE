@@ -1,100 +1,71 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
-    getAuth, onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import {
-    getDatabase, ref, get, push, set, update, remove
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+// ===== LocalStorage Key =====
+let matches = JSON.parse(localStorage.getItem("matches")) || [];
 
-const firebaseConfig = {
-  apiKey: "AIzaSyD66aIVOTVco6rTtpVinkl64UZGnZDgn1o",
-  authDomain: "firezone-elite.firebaseapp.com",
-  databaseURL: "https://firezone-elite-default-rtdb.firebaseio.com",
-  projectId: "firezone-elite",
-  storageBucket: "firezone-elite.firebasestorage.app",
-  messagingSenderId: "121224317328",
-  appId: "1:121224317328:web:a4d19bab51fc8076400b15",
-  measurementId: "G-9YR0LYN37X"
-};
+// ===== Render Table =====
+function renderTable() {
+    const tbody = document.querySelector("#matchTable tbody");
+    tbody.innerHTML = "";
+    matches.forEach((match, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${match.name}</td>
+            <td>${match.date}</td>
+            <td>${match.time}</td>
+            <td>${match.players}</td>
+            <td>
+                <button class="edit">Edit</button>
+                <button class="delete">Delete</button>
+            </td>
+        `;
+        // Edit Event
+        tr.querySelector(".edit").addEventListener("click", () => editMatch(index));
+        // Delete Event
+        tr.querySelector(".delete").addEventListener("click", () => deleteMatch(index));
+        tbody.appendChild(tr);
+    });
+}
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
+// ===== Add Match =====
+document.getElementById("addMatchBtn").addEventListener("click", () => {
+    const name = prompt("Enter Match Name:");
+    if(!name) return;
+    const date = prompt("Enter Match Date (YYYY-MM-DD):");
+    if(!date) return;
+    const time = prompt("Enter Match Time (HH:MM):");
+    if(!time) return;
+    const players = prompt("Enter Players (comma separated):");
+    if(!players) return;
 
-const adminEmail = "surushannu@gmail.com";
-
-onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        window.location.href = "login.html";
-    } else {
-        if (user.email !== adminEmail) {
-            window.location.href = "public.html";
-        } else {
-            loadMatches();
-        }
-    }
+    matches.push({ name, date, time, players });
+    localStorage.setItem("matches", JSON.stringify(matches));
+    renderTable();
 });
 
-window.loadMatches = async function () {
-    const snap = await get(ref(db, "tournaments"));
+// ===== Edit Match =====
+function editMatch(index) {
+    const match = matches[index];
+    const name = prompt("Edit Match Name:", match.name);
+    if(!name) return;
+    const date = prompt("Edit Match Date (YYYY-MM-DD):", match.date);
+    if(!date) return;
+    const time = prompt("Edit Match Time (HH:MM):", match.time);
+    if(!time) return;
+    const players = prompt("Edit Players (comma separated):", match.players);
+    if(!players) return;
 
-    let html = `<h2>Upcoming Matches</h2>`;
+    matches[index] = { name, date, time, players };
+    localStorage.setItem("matches", JSON.stringify(matches));
+    renderTable();
+}
 
-    snap.forEach(match => {
-        let m = match.val();
-        let id = match.key;
+// ===== Delete Match =====
+function deleteMatch(index) {
+    if(confirm("Are you sure you want to delete this match?")) {
+        matches.splice(index, 1);
+        localStorage.setItem("matches", JSON.stringify(matches));
+        renderTable();
+    }
+}
 
-        html += `
-        <div class="box">
-            <h3>${id}</h3>
-            <p>Date: ${m.date}</p>
-            <p>Time: ${m.time}</p>
-            <button onclick="deleteMatch('${id}')">Delete</button>
-        </div>
-        `;
-    });
-
-    document.getElementById("adminContent").innerHTML = html;
-};
-
-window.addMatchForm = function () {
-    document.getElementById("adminContent").innerHTML = `
-        <h2>Add Match</h2>
-        <div class="box">
-            <input id="date" placeholder="Date"><br><br>
-            <input id="time" placeholder="Time"><br><br>
-            <input id="entry" placeholder="Entry Fee"><br><br>
-            <input id="prize" placeholder="Prize"><br><br>
-            <input id="winners" placeholder="Total Winners"><br><br>
-            <button onclick="submitMatch()">Add</button>
-        </div>
-    `;
-};
-
-window.submitMatch = async function () {
-    let id = "M" + Math.floor(Math.random()*999999);
-
-    await set(ref(db, "tournaments/" + id), {
-        date: date.value,
-        time: time.value,
-        entryFee: entry.value,
-        prize: prize.value,
-        winners: winners.value
-    });
-
-    alert("Match Added!");
-    loadMatches();
-};
-
-window.deleteMatch = async function (id) {
-    await remove(ref(db, "tournaments/" + id));
-    alert("Match Deleted!");
-    loadMatches();
-};
-
-window.approvalPage = async function () {
-    document.getElementById("adminContent").innerHTML = `
-        <h2>Player Approvals</h2>
-        <p>Select a match to view approval requests.</p>
-    `;
-};
+// ===== Initial Render =====
+renderTable();
