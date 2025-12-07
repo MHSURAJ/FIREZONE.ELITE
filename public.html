@@ -1,161 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Player Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <style>
-    body { margin:0; font-family:Arial; background:#121212; color:white; }
-
-    .sidebar {
-      width:240px;
-      height:100vh;
-      background:#1e1e1e;
-      position:fixed;
-      padding-top:20px;
-    }
-    .sidebar a {
-      display:block;
-      padding:15px;
-      color:#ddd;
-      text-decoration:none;
-      border-bottom:1px solid #333;
-    }
-    .sidebar a:hover { background:#333; }
-
-    .content {
-      margin-left:260px;
-      padding:20px;
-    }
-
-    .match-box {
-      background:#1f1f1f;
-      padding:15px;
-      border-radius:10px;
-      margin-bottom:15px;
-      border-left:4px solid #ff5722;
-    }
-
-    .btn {
-      background:#ff5722;
-      color:white;
-      padding:10px 15px;
-      border:none;
-      cursor:pointer;
-      border-radius:6px;
-      margin-top:10px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="firebase.js"></script>
 </head>
 <body>
 
-<div class="sidebar">
-  <a href="#" onclick="loadUpcoming()">All Matches</a>
-  <a href="#" onclick="loadJoined()">My Matches</a>
-  <a href="mailto:surushannu@gmail.com">Contact Us</a>
+<h1>Player Dashboard</h1>
+
+<div id="upcomingMatches">
+  <h2>Upcoming Matches</h2>
+  <ul id="matchesList"></ul>
 </div>
 
-<div class="content" id="content">
-  <h2>Welcome Player</h2>
+<div id="contactUs">
+  <h2>Contact Us</h2>
+  <input type="text" id="contactName" placeholder="Your Name">
+  <input type="email" id="contactEmail" placeholder="Your Email">
+  <textarea id="contactMsg" placeholder="Your Message"></textarea>
+  <button id="sendMsgBtn">Send Message</button>
 </div>
 
+<button id="logoutBtn">Logout</button>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyD66aIVOTVco6rTtpVinkl64UZGnZDgn1o",
-  authDomain: "firezone-elite.firebaseapp.com",
-  databaseURL: "https://firezone-elite-default-rtdb.firebaseio.com",
-  projectId: "firezone-elite",
-  storageBucket: "firezone-elite.firebasestorage.app",
-  messagingSenderId: "121224317328",
-  appId: "1:121224317328:web:a4d19bab51fc8076400b15",
-  measurementId: "G-9YR0LYN37X"
-};
-
-firebase.initializeApp(firebaseConfig);
-
-const auth = firebase.auth();
-const db = firebase.database();
-const content = document.getElementById("content");
-
-auth.onAuthStateChanged(user => {
-  if (!user) window.location.href = "index.html";
-});
-
-function loadUpcoming() {
-  content.innerHTML = "<h2>Upcoming Matches</h2>";
-
-  db.ref("matches").once("value", snap => {
-    snap.forEach(m => {
-      let d = m.val();
-      content.innerHTML += `
-      <div class='match-box'>
-        <h3>${d.title}</h3>
-        <p><b>Date:</b> ${d.date}</p>
-        <p><b>Time:</b> ${d.time}</p>
-        <p><b>Entry:</b> ${d.entry}</p>
-        <p><b>Prize:</b> ${d.prize}</p>
-        <button class='btn' onclick="registerMatch('${m.key}')">Register</button>
-      </div>
-      `;
-    });
-  });
-}
-
-function registerMatch(matchId) {
-
-  // 1) Open Google Form
-  window.open("https://forms.gle/5SyJcrgC6xkLZtb46", "_blank");
-
-  // 2) Create pending request in Firebase
-  auth.onAuthStateChanged(user => {
-    if (!user) return;
-
-    db.ref("matchRequests/" + matchId + "/" + user.uid).set({
-      email: user.email,
-      status: "pending",
-      roomId: "",
-      password: "",
-      timestamp: Date.now()
-    });
-
-    alert("Form submit karne ke baad admin verify karega. Status: Pending");
-  });
-}
-
-function loadJoined() {
-  auth.onAuthStateChanged(user => {
-    content.innerHTML = "<h2>My Matches</h2>";
-
-    db.ref("matchRequests").once("value", snap => {
-      snap.forEach(match => {
-        if (match.child(user.uid).exists()) {
-
-          let r = match.child(user.uid).val();
-
-          content.innerHTML += `
-          <div class='match-box'>
-            <h3>Match: ${match.key}</h3>
-            <p><b>Status:</b> ${r.status}</p>
-
-            ${
-              r.status === "approved" ?
-              `<p><b>Room ID:</b> ${r.roomId}</p>
-               <p><b>Password:</b> ${r.password}</p>` : ""
-            }
-          </div>
-          `;
-        }
-      });
-    });
-  });
-}
-
-</script>
-
+<script src="public.js"></script>
 </body>
 </html>
