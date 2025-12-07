@@ -3,41 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard - Match Management</title>
-<link rel="stylesheet" href="admin.css">
+<title>Admin Dashboard</title>
 <style>
-  body { margin:0; font-family: Arial,sans-serif; background:#121212; color:#fff; }
-  h1 { padding:20px 20px 0 20px; margin:0; }
-  table { width:95%; margin:20px auto; border-collapse: collapse; }
-  th, td { padding:12px; border:1px solid #444; text-align:left; }
-  th { background:#1f1f1f; }
-  tr:nth-child(even) { background:#1a1a1a; }
-  button { padding:6px 12px; margin-right:5px; border:none; cursor:pointer; border-radius:4px; font-weight:bold; }
-  .add { background:#007bff; color:#fff; margin-left:20px; }
-  .edit { background:#ffc107; color:#000; }
-  .delete { background:#dc3545; color:#fff; }
-  input { padding:4px; border-radius:3px; border:none; }
+body { margin:0; font-family: Arial,sans-serif; display:flex; height:100vh; background:#121212; color:#fff; }
+#sidebar { width:220px; background:#1f1f1f; display:flex; flex-direction:column; padding-top:20px; }
+#sidebar button { padding:12px 20px; border:none; background:none; color:#fff; text-align:left; width:100%; cursor:pointer; font-size:16px; border-left:4px solid transparent; margin-bottom:5px; }
+#sidebar button.active { border-left:4px solid #007bff; background:#2a2a2a; }
+#sidebar button:hover { background:#2a2a2a; }
+#content { flex:1; padding:20px; overflow:auto; }
+table { width:100%; border-collapse: collapse; margin-top:10px; }
+th, td { padding:10px; border:1px solid #444; text-align:left; }
+th { background:#1f1f1f; }
+tr:nth-child(even){ background:#1a1a1a; }
+button.action { padding:5px 10px; margin-right:5px; border:none; border-radius:4px; cursor:pointer; font-weight:bold; }
+button.add { background:#007bff; color:#fff; }
+button.edit { background:#ffc107; color:#000; }
+button.delete { background:#dc3545; color:#fff; }
+.status-approved { color:#28a745; font-weight:bold; }
+.status-rejected { color:#dc3545; font-weight:bold; }
 </style>
 </head>
 <body>
 
-<h1>Admin Dashboard - Match Management</h1>
-<button class="add" id="addMatchBtn">Add Match</button>
+<div id="sidebar">
+  <button id="dashboardBtn" class="active">Dashboard</button>
+  <button id="matchBtn">Match Management</button>
+  <button id="playerBtn">Players Approval</button>
+  <button id="logoutBtn">Logout</button>
+</div>
 
-<table id="matchTable">
-<thead>
-<tr>
-<th>Match Name</th>
-<th>Date</th>
-<th>Time</th>
-<th>Players</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody>
-<!-- Match rows injected here -->
-</tbody>
-</table>
+<div id="content">
+  <!-- Default content -->
+  <h1>Welcome to Admin Dashboard</h1>
+  <p>Select an option from the sidebar to manage matches or players.</p>
+</div>
 
 <script src="admin.js"></script>
 </body>
