@@ -8,27 +8,85 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="firebase.js"></script>
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background-color: #222;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+.sidebar h2 {
+    margin-bottom: 20px;
+}
+.sidebar button {
+    background: none;
+    border: none;
+    color: white;
+    text-align: left;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.sidebar button:hover {
+    background-color: #444;
+}
+
+/* Main content */
+.main {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+#matchesList li {
+    margin-bottom: 10px;
+}
+#contactInfo {
+    display: none;
+}
+</style>
 </head>
 <body>
 
 <div class="container">
 
-    <h1>Player Dashboard</h1>
-
-    <div id="upcomingMatches">
-        <h2>Upcoming Matches</h2>
-        <ul id="matchesList"></ul>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <button id="allMatchesBtn">All Matches</button>
+        <button id="myMatchesBtn">My Matches</button>
+        <button id="contactUsBtn">Contact Us</button>
+        <button id="logoutBtn" style="margin-top:auto;">Logout</button>
     </div>
 
-    <div id="contactUs">
-        <h2>Contact Us</h2>
-        <input type="text" id="contactName" placeholder="Your Name">
-        <input type="email" id="contactEmail" placeholder="Your Email">
-        <textarea id="contactMsg" placeholder="Your Message"></textarea>
-        <button id="sendMsgBtn">Send Message</button>
-    </div>
+    <!-- Main Content -->
+    <div class="main">
+        <div id="allMatchesSection">
+            <h2>All Matches</h2>
+            <ul id="matchesList"></ul>
+        </div>
 
-    <button id="logoutBtn">Logout</button>
+        <div id="myMatchesSection" style="display:none;">
+            <h2>My Matches</h2>
+            <ul id="myMatchesList"></ul>
+        </div>
+
+        <div id="contactInfo" style="display:none;">
+            <h2>Contact Us</h2>
+            <p>Email: <strong>surushannu@gmail.com</strong></p>
+        </div>
+    </div>
 
 </div>
 
