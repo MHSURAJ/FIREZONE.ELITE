@@ -5,9 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Player Dashboard</title>
 <link rel="stylesheet" href="style.css">
+
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="firebase.js"></script>
+
 <style>
 body {
     margin:0;
@@ -17,9 +20,7 @@ body {
     color: #222;
     overflow-x: hidden;
 }
-
 .container { display: flex; min-height:100vh; }
-
 .sidebar {
     width: 220px;
     background-color: rgba(34,34,34,0.95);
@@ -39,9 +40,7 @@ body {
     font-size:16px; border-radius:4px; margin-bottom:5px;
 }
 .sidebar button:hover { background-color:#444; }
-
 .main { flex:1; margin-left:240px; padding:20px; overflow-y:auto; background:transparent; }
-
 .match-card {
     background: rgba(255,255,255,0.85);
     padding:15px; margin-bottom:15px;
@@ -55,7 +54,6 @@ body {
     background-color:#007bff; color:white; border:none; border-radius:4px;
 }
 .match-card button:hover { background-color:#0056b3; }
-
 #contactInfo { display:none; }
 </style>
 </head>
@@ -90,6 +88,7 @@ body {
 
 </div>
 
-<script src="public.js"></script>
+<!-- Correct JS order -->
+<script src="./public.js"></script>
 </body>
 </html>
