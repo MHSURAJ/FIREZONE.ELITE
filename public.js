@@ -9,6 +9,42 @@ if (!userEmail) {
 }
 
 // =====================
+//   SECTION TOGGLE
+// =====================
+
+const allBtn = document.getElementById("allMatchesBtn");
+const myBtn = document.getElementById("myMatchesBtn");
+const contactBtn = document.getElementById("contactUsBtn");
+
+const allSec = document.getElementById("allMatchesSection");
+const mySec = document.getElementById("myMatchesSection");
+const contactSec = document.getElementById("contactInfo");
+
+allBtn.onclick = () => {
+  allSec.style.display = "block";
+  mySec.style.display = "none";
+  contactSec.style.display = "none";
+};
+
+myBtn.onclick = () => {
+  allSec.style.display = "none";
+  mySec.style.display = "block";
+  contactSec.style.display = "none";
+};
+
+contactBtn.onclick = () => {
+  allSec.style.display = "none";
+  mySec.style.display = "none";
+  contactSec.style.display = "block";
+};
+
+// Logout
+document.getElementById("logoutBtn").onclick = () => {
+  localStorage.removeItem("loggedInUser");
+  window.location.href = "index.html";
+};
+
+// =====================
 //   LOAD MATCHES
 // =====================
 
@@ -16,7 +52,6 @@ function loadMatches() {
   let matches = JSON.parse(localStorage.getItem("matches")) || [];
   let approvals = JSON.parse(localStorage.getItem("approvals")) || {};
 
-  // FIXED IDs 🎯
   let allMatches = document.getElementById("matchesList");
   let myMatchesList = document.getElementById("myMatchesList");
 
@@ -24,7 +59,6 @@ function loadMatches() {
   myMatchesList.innerHTML = "";
 
   matches.forEach((m, i) => {
-
     let btnText = "Register";
     let btnDisabled = false;
 
@@ -38,7 +72,7 @@ function loadMatches() {
       btnDisabled = true;
     }
 
-    // ALL MATCHES SECTION
+    // ALL MATCHES CARD
     let card = document.createElement("div");
     card.className = "match-card";
 
@@ -51,7 +85,6 @@ function loadMatches() {
       <p><b>Time:</b> ${m.time}</p>
 
       <button 
-        class="regbtn"
         onclick="registerMatch(${i})"
         ${btnDisabled ? "disabled" : ""}
       >
@@ -61,7 +94,7 @@ function loadMatches() {
 
     allMatches.appendChild(card);
 
-    // MY APPROVED MATCHES (Room ID + Password)
+    // IF APPROVED → SHOW IN MY MATCHES
     if (approvals[userEmail] === "approved_" + m.matchId) {
       let myCard = document.createElement("div");
       myCard.className = "match-card";
@@ -71,7 +104,7 @@ function loadMatches() {
         <p><b>Date:</b> ${m.date}</p>
         <p><b>Time:</b> ${m.time}</p>
 
-        <h4 style="margin-top:10px;">Room Details</h4>
+        <h4>Room Details</h4>
         <p><b>Room ID:</b> ${m.roomId}</p>
         <p><b>Password:</b> ${m.password}</p>
       `;
@@ -92,7 +125,6 @@ function registerMatch(index) {
   let match = matches[index];
 
   approvals[userEmail] = "pending_" + match.matchId;
-
   localStorage.setItem("approvals", JSON.stringify(approvals));
 
   alert("Registration sent! Wait for admin approval.");
@@ -100,7 +132,12 @@ function registerMatch(index) {
 }
 
 // =====================
-//  PAGE INIT
+//  INITIAL LOAD
 // =====================
 
-window.onload = loadMatches;
+window.onload = () => {
+  loadMatches();
+  allSec.style.display = "block";
+  mySec.style.display = "none";
+  contactSec.style.display = "none";
+};
