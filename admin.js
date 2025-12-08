@@ -1,36 +1,45 @@
-let editIndex = null;
+let editKey = null;
+
+// Firebase reference
+const matchesRef = firebase.database().ref('matches');
+
+// DOM elements
+const popupOverlay = document.getElementById('popupOverlay');
+const popupTitle = document.getElementById('popupTitle');
+const matchName = document.getElementById('matchName');
+const matchId = document.getElementById('matchId');
+const entryFee = document.getElementById('entryFee');
+const prize = document.getElementById('prize');
+const date = document.getElementById('date');
+const time = document.getElementById('time');
+const roomId = document.getElementById('roomId');
+const password = document.getElementById('password');
+const matchList = document.getElementById('matchList');
 
 // Switch sections
 function showSection(id) {
   document.querySelectorAll(".section").forEach(sec => sec.style.display = "none");
   document.getElementById(id).style.display = "block";
-
-  if (id === "players") {
-    loadPendingPlayers();
-  }
+  if (id === "players") loadPendingPlayers();
 }
 
 // Open popup
-function openPopup(i = null) {
-  editIndex = i;
-
-  if (i !== null) {
-    const m = JSON.parse(localStorage.getItem("matches"))[i];
-
+function openPopup(key = null, match = null) {
+  editKey = key;
+  if(key && match){
     popupTitle.innerText = "Edit Match";
-    matchName.value = m.name;
-    matchId.value = m.matchId;
-    entryFee.value = m.entryFee;
-    prize.value = m.prize;
-    date.value = m.date;
-    time.value = m.time;
-    roomId.value = m.roomId;
-    password.value = m.password;
+    matchName.value = match.name;
+    matchId.value = match.matchId;
+    entryFee.value = match.entryFee;
+    prize.value = match.prize;
+    date.value = match.date;
+    time.value = match.time;
+    roomId.value = match.roomId;
+    password.value = match.password;
   } else {
     popupTitle.innerText = "Add Match";
     document.querySelectorAll(".popup input").forEach(i => i.value = "");
   }
-
   popupOverlay.style.display = "flex";
 }
 
@@ -39,10 +48,8 @@ function closePopup() {
   popupOverlay.style.display = "none";
 }
 
-// Save Match
+// Save Match (Add / Edit)
 function saveMatch() {
-  let matches = JSON.parse(localStorage.getItem("matches")) || [];
-
   const obj = {
     name: matchName.value,
     matchId: matchId.value,
@@ -54,53 +61,54 @@ function saveMatch() {
     password: password.value
   };
 
-  if (editIndex !== null) {
-    matches[editIndex] = obj;
-  } else {
-    matches.push(obj);
+  if(editKey){ // Edit
+    matchesRef.child(editKey).update(obj);
+  } else { // Add
+    matchesRef.push(obj);
   }
 
-  localStorage.setItem("matches", JSON.stringify(matches));
-  loadMatches();
   closePopup();
 }
 
-// Delete match
-function deleteMatch(i) {
-  let matches = JSON.parse(localStorage.getItem("matches")) || [];
-  matches.splice(i, 1);
-  localStorage.setItem("matches", JSON.stringify(matches));
-  loadMatches();
+// Delete Match
+function deleteMatch(key){
+  if(confirm("Delete this match?")){
+    matchesRef.child(key).remove();
+  }
 }
 
-// Load Matches
-function loadMatches() {
-  let matches = JSON.parse(localStorage.getItem("matches")) || [];
-  matchList.innerHTML = "";
-
-  matches.forEach((m, i) => {
-    matchList.innerHTML += `
-      <div class="match-card">
+// Load Matches from Firebase
+matchesRef.on('value', snapshot=>{
+  matchList.innerHTML = '';
+  const data = snapshot.val();
+  if(data){
+    Object.entries(data).forEach(([key, m])=>{
+      const div = document.createElement('div');
+      div.classList.add('match-card');
+      div.innerHTML = `
         <h3>${m.name}</h3>
         <p><b>ID:</b> ${m.matchId}</p>
         <p><b>Fee:</b> ${m.entryFee}</p>
         <p><b>Prize:</b> ${m.prize}</p>
         <p><b>Date:</b> ${m.date}</p>
         <p><b>Time:</b> ${m.time}</p>
-
         <div class="card-btns">
-          <button class="edit-btn" onclick="openPopup(${i})">Edit</button>
-          <button class="delete-btn" onclick="deleteMatch(${i})">Delete</button>
+          <button class="edit-btn">Edit</button>
+          <button class="delete-btn">Delete</button>
         </div>
-      </div>
-    `;
-  });
-}
+      `;
+      matchList.appendChild(div);
+
+      div.querySelector('.edit-btn').addEventListener('click', ()=> openPopup(key, m));
+      div.querySelector('.delete-btn').addEventListener('click', ()=> deleteMatch(key));
+    });
+  } else {
+    matchList.innerHTML = "<p>No matches added yet.</p>";
+  }
+});
 
 // =========================
-//   PENDING PLAYERS SYSTEM
-// =========================
-
+// PENDING PLAYERS (same localStorage logic)
 function loadPendingPlayers() {
   let approvals = JSON.parse(localStorage.getItem("approvals")) || {};
   let playerList = document.getElementById("playerList");
@@ -129,20 +137,14 @@ function loadPendingPlayers() {
     }
   }
 
-  if (!hasPending) {
-    playerList.innerHTML = "<p>No pending approval requests.</p>";
-  }
+  if(!hasPending) playerList.innerHTML = "<p>No pending approval requests.</p>";
 }
 
 function approvePlayer(email) {
   let approvals = JSON.parse(localStorage.getItem("approvals")) || {};
-
-  let matchId = approvals[email].split("_")[1]; // pending → matchId
-
+  let matchId = approvals[email].split("_")[1];
   approvals[email] = "approved_" + matchId;
-
   localStorage.setItem("approvals", JSON.stringify(approvals));
-
   alert(email + " approved!");
   loadPendingPlayers();
 }
@@ -151,10 +153,6 @@ function rejectPlayer(email) {
   let approvals = JSON.parse(localStorage.getItem("approvals")) || {};
   delete approvals[email];
   localStorage.setItem("approvals", JSON.stringify(approvals));
-
   alert(email + " rejected!");
   loadPendingPlayers();
 }
-
-// Init
-window.onload = loadMatches;
