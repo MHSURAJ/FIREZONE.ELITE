@@ -1,75 +1,50 @@
-document.addEventListener("DOMContentLoaded", ()=>{
+const matchesRef = firebase.database().ref('matches');
 
-  const sections = document.querySelectorAll('.section');
-  const navLinks = document.querySelectorAll('.nav-links li');
+const matchesList = document.getElementById('matchesList');
+const myMatchesList = document.getElementById('myMatchesList');
+const logoutBtn = document.getElementById('logoutBtn');
 
-  // Slidebar navigation
-  navLinks.forEach(link=>{
-    link.style.cursor = 'pointer'; // ensure pointer
-    link.addEventListener('click', ()=>{
-      navLinks.forEach(l=>l.classList.remove('active'));
-      link.classList.add('active');
+logoutBtn.addEventListener('click', ()=>{
+  firebase.auth().signOut().then(()=>{
+    localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('userType');
+    alert("Logged out successfully!");
+    window.location.href = "login.html";
+  }).catch(err=>{
+    console.error(err);
+    alert("Logout failed: "+err.message);
+  });
+});
 
-      const target = link.getAttribute('data-section');
-      sections.forEach(sec=>{
-        if(sec.id === target){
-          sec.classList.add('active');
-        } else {
-          sec.classList.remove('active');
+// Sidebar
+function showSection(id){
+  document.querySelectorAll('.section').forEach(sec=>sec.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+
+// Fetch matches realtime
+matchesRef.on('value', snapshot=>{
+  matchesList.innerHTML='';
+  myMatchesList.innerHTML='';
+  const data = snapshot.val();
+  if(data){
+    const userEmail = localStorage.getItem('loggedInUser');
+    Object.values(data).forEach(m=>{
+      const div = document.createElement('div');
+      div.classList.add('match-card');
+      div.innerHTML=`<h3>${m.name}</h3><p><b>ID:</b> ${m.matchId}</p>
+      <p><b>Fee:</b> ${m.entryFee}</p><p><b>Prize:</b> ${m.prize}</p>
+      <p><b>Date:</b> ${m.date}</p><p><b>Time:</b> ${m.time}</p>`;
+      matchesList.appendChild(div);
+
+      // My matches logic
+      if(userEmail){
+        const approvals = JSON.parse(localStorage.getItem('approvals'))||{};
+        if(approvals[userEmail] && approvals[userEmail].split('_')[1]===m.matchId){
+          const myDiv = div.cloneNode(true);
+          myMatchesList.appendChild(myDiv);
         }
-      });
+      }
     });
-  });
-
-  // Logout
-  const logoutBtn = document.getElementById("logoutBtn");
-  logoutBtn.addEventListener("click", ()=>{
-    firebase.auth().signOut().then(()=>{
-      localStorage.removeItem("loggedInUser");
-      localStorage.removeItem("userType");
-      window.location.href = "login.html";
-    }).catch(err=>{
-      console.error(err);
-      alert("Logout failed: "+err.message);
-    });
-  });
-
-  // Sample data for upcoming matches
-  const matches = [
-    {name: "Match 1", date: "2025-12-10", prize: "$1000"},
-    {name: "Match 2", date: "2025-12-12", prize: "$1500"},
-    {name: "Match 3", date: "2025-12-15", prize: "$2000"},
-  ];
-
-  const matchesList = document.getElementById("matchesList");
-  matches.forEach(match=>{
-    const card = document.createElement('div');
-    card.classList.add('card');
-    card.innerHTML = `<h3>${match.name}</h3><p>Date: ${match.date}</p><p>Prize: ${match.prize}</p>`;
-    matchesList.appendChild(card);
-  });
-
-  // Sample data for my matches
-  const myMatches = [
-    {name: "Match 1", date: "2025-12-10", status: "Registered"},
-    {name: "Match 2", date: "2025-12-12", status: "Pending"},
-  ];
-
-  const myMatchesList = document.getElementById("myMatchesList");
-  myMatches.forEach(match=>{
-    const card = document.createElement('div');
-    card.classList.add('card');
-    card.innerHTML = `<h3>${match.name}</h3><p>Date: ${match.date}</p><p>Status: ${match.status}</p>`;
-    myMatchesList.appendChild(card);
-  });
-
-  // Contact Us email fix
-  const contactSection = document.getElementById('contactUs');
-  contactSection.innerHTML = `
-    <h1>Contact Us</h1>
-    <div class="contact-card">
-      <p>For any support, email us at: <a href="mailto:firezone-support1@gmail.com">firezone-support1@gmail.com</a></p>
-    </div>
-  `;
-
+  } else matchesList.innerHTML="<p>No upcoming matches.</p>";
 });
