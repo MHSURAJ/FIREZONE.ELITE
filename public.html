@@ -1,17 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="firebase.js"></script>
+    <script src="public.js" defer></script>
+</head>
 <body>
     <div class="container">
-        <h1>Welcome to FireZone</h1>
-        <div id="upcomingMatches">
-            <h2>Upcoming Matches</h2>
-            <ul id="matchesList"></ul>
+        <!-- Sidebar / Dashboard -->
+        <div class="sidebar">
+            <h2>Dashboard</h2>
+            <ul>
+                <li><a href="#upcomingMatches">Upcoming Matches</a></li>
+                <li><a href="#contactUs">Contact Us</a></li>
+                <li><button id="logoutBtn">Logout</button></li>
+            </ul>
         </div>
-        <div id="contactUs">
-            <h2>Contact Us</h2>
-            <input type="text" placeholder="Your Name">
-            <input type="email" placeholder="Email">
-            <textarea placeholder="Message"></textarea>
-            <button>Send</button>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1>Welcome to FireZone</h1>
+
+            <div id="upcomingMatches">
+                <h2>Upcoming Matches</h2>
+                <ul id="matchesList">
+                    <!-- Matches will be injected via JS -->
+                </ul>
+            </div>
+
+            <div id="contactUs">
+                <h2>Contact Us</h2>
+                <input type="text" placeholder="Your Name" id="name">
+                <input type="email" placeholder="Email" id="email">
+                <textarea placeholder="Message" id="message"></textarea>
+                <button id="sendMessage">Send</button>
+            </div>
         </div>
-        <button id="logoutBtn">Logout</button>
     </div>
 </body>
+</html>
