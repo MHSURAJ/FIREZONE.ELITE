@@ -1,18 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // =====================
-    //  LOGIN CHECK
-    // =====================
     const userEmail = localStorage.getItem("userEmail");
     const userType = localStorage.getItem("userType");
 
     if (!userEmail || userType !== "player") {
         window.location.href = "login.html";
+        return;
     }
 
-    // =====================
-    //  SIDEBAR BUTTONS
-    // =====================
+    // Sidebar buttons
     const allBtn = document.getElementById("allMatchesBtn");
     const myBtn = document.getElementById("myMatchesBtn");
     const contactBtn = document.getElementById("contactUsBtn");
@@ -47,9 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "login.html";
     });
 
-    // =====================
-    //  LOAD MATCHES
-    // =====================
+    // Matches
     const matchesList = document.getElementById("matchesList");
     const myMatchesList = document.getElementById("myMatchesList");
 
@@ -60,16 +54,9 @@ document.addEventListener("DOMContentLoaded", () => {
         matchesList.innerHTML = "";
         myMatchesList.innerHTML = "";
 
-        if (matches.length === 0) {
-            matchesList.innerHTML = "<p>No upcoming matches.</p>";
-            return;
-        }
-
         matches.forEach((m, i) => {
 
-            // =====================
-            //  ALL MATCHES
-            // =====================
+            // All matches
             let btnText = "Register";
             let btnDisabled = false;
 
@@ -95,7 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
             matchesList.appendChild(card);
 
-            // Register click
             card.querySelector(`#regBtn${i}`).addEventListener("click", () => {
                 approvals[userEmail] = "pending_" + m.matchId;
                 localStorage.setItem("approvals", JSON.stringify(approvals));
@@ -103,9 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 renderMatches();
             });
 
-            // =====================
-            //  MY MATCHES (APPROVED)
-            // =====================
+            // My matches
             if (approvals[userEmail] === "approved_" + m.matchId) {
                 const myCard = document.createElement("div");
                 myCard.className = "match-card";
@@ -113,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <h3>${m.name}</h3>
                     <p><b>Date:</b> ${m.date}</p>
                     <p><b>Time:</b> ${m.time}</p>
-                    <h4 style="margin-top:10px;">Room Details</h4>
+                    <h4>Room Details</h4>
                     <p><b>Room ID:</b> ${m.roomId}</p>
                     <p><b>Password:</b> ${m.password}</p>
                 `;
