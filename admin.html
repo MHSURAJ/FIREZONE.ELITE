@@ -1,72 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel</title>
-  <link rel="stylesheet" href="admin.css">
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="firebase.js"></script>
-  <script src="admin.js" defer></script>
-</head>
-<body>
-
-  <div class="sidebar">
-    <h2>Admin Panel</h2>
-    <ul>
-      <li onclick="showSection('matches')">Manage Matches</li>
-      <li onclick="showSection('players')">Players</li>
-    </ul>
+<div class="main">
+  <div style="text-align:right;margin-bottom:10px;">
+    <button id="logoutBtn">Logout</button>
   </div>
 
-  <div class="main">
-    <div id="matches" class="section">
-      <h2>Matches</h2>
-      <button class="add-btn" onclick="openPopup()">+ Add Match</button>
-      <div id="matchList" class="match-list"></div>
-    </div>
-
-    <div id="players" class="section" style="display:none;">
-      <h2>Pending Players</h2>
-      <div id="playerList"></div>
-    </div>
+  <div id="matches" class="section">
+    <h2>Matches</h2>
+    <button class="add-btn" onclick="openPopup()">+ Add Match</button>
+    <div id="matchList" class="match-list"></div>
   </div>
 
-  <!-- POPUP -->
-  <div id="popupOverlay" class="overlay">
-    <div class="popup">
-      <h2 id="popupTitle">Add Match</h2>
-
-      <label>Match Name</label>
-      <input id="matchName">
-
-      <label>Match ID</label>
-      <input id="matchId">
-
-      <label>Entry Fee</label>
-      <input id="entryFee">
-
-      <label>Prize</label>
-      <input id="prize">
-
-      <label>Date</label>
-      <input type="date" id="date">
-
-      <label>Time</label>
-      <input type="time" id="time">
-
-      <label>Room ID (Visible only to verified players)</label>
-      <input id="roomId">
-
-      <label>Password (Visible only to verified players)</label>
-      <input id="password">
-
-      <button class="save-btn" onclick="saveMatch()">Save</button>
-      <button class="close-btn" onclick="closePopup()">Close</button>
-    </div>
+  <div id="players" class="section" style="display:none;">
+    <h2>Pending Players</h2>
+    <div id="playerList"></div>
   </div>
-
-</body>
-</html>
+</div>
