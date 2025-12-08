@@ -1,46 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Public Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="firebase.js"></script>
-    <script src="public.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FireZone Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="firebase.js"></script>
+  <script src="public.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <!-- Sidebar / Dashboard -->
-        <div class="sidebar">
-            <h2>Dashboard</h2>
-            <ul>
-                <li><a href="#upcomingMatches">Upcoming Matches</a></li>
-                <li><a href="#contactUs">Contact Us</a></li>
-                <li><button id="logoutBtn">Logout</button></li>
-            </ul>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <h1>Welcome to FireZone</h1>
-
-            <div id="upcomingMatches">
-                <h2>Upcoming Matches</h2>
-                <ul id="matchesList">
-                    <!-- Matches will be injected via JS -->
-                </ul>
-            </div>
-
-            <div id="contactUs">
-                <h2>Contact Us</h2>
-                <input type="text" placeholder="Your Name" id="name">
-                <input type="email" placeholder="Email" id="email">
-                <textarea placeholder="Message" id="message"></textarea>
-                <button id="sendMessage">Send</button>
-            </div>
-        </div>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <h2>FireZone</h2>
     </div>
+    <ul class="nav-links">
+      <li data-section="upcomingMatches" class="active">Upcoming Matches</li>
+      <li data-section="myMatches">My Matches</li>
+      <li data-section="contactUs">Contact Us</li>
+    </ul>
+    <div class="logout">
+      <button id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Sections -->
+    <section id="upcomingMatches" class="section active">
+      <h1>Upcoming Matches</h1>
+      <div class="cards" id="matchesList">
+        <!-- JS will inject match cards -->
+      </div>
+    </section>
+
+    <section id="myMatches" class="section">
+      <h1>My Matches</h1>
+      <div class="cards" id="myMatchesList">
+        <!-- JS will inject my matches -->
+      </div>
+    </section>
+
+    <section id="contactUs" class="section">
+      <h1>Contact Us</h1>
+      <div class="contact-card">
+        <input type="text" placeholder="Your Name" id="name">
+        <input type="email" placeholder="Email" id="email">
+        <textarea placeholder="Message" id="message"></textarea>
+        <button id="sendMessage">Send</button>
+      </div>
+    </section>
+  </div>
 </body>
 </html>
